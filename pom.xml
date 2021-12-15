@@ -9,7 +9,8 @@
 	<packaging>pom</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<modules>
-		<module>core</module>
+        <module>auth-jwt-extension</module>
+		<module>auth-jwt-core</module>
 	</modules>
 
 	<properties>
@@ -18,6 +19,16 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>io.github.ctlove0523.auth.jwt</groupId>
+			<artifactId>auth-jwt-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.ctlove0523.auth.jwt</groupId>
+			<artifactId>auth-jwt-consul</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
