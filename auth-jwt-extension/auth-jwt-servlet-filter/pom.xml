@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>auth-jwt-consul</artifactId>
+    <artifactId>auth-jwt-servlet-filter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,8 +22,9 @@
             <artifactId>auth-jwt-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.ecwid.consul</groupId>
-            <artifactId>consul-api</artifactId>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
         </dependency>
     </dependencies>
+
 </project>

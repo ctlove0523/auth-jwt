@@ -13,18 +13,11 @@
     <packaging>pom</packaging>
     <modules>
         <module>auth-jwt-consul</module>
+        <module>auth-jwt-servlet-filter</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.ecwid.consul</groupId>
-            <artifactId>consul-api</artifactId>
-            <version>1.4.5</version>
-        </dependency>
-    </dependencies>
 </project>

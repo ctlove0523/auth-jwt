@@ -37,7 +37,7 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
             .expireAfterWrite(Duration.ofMinutes(5L))
             .build();
 
-    JwtTokenClient(SignKeyProvider signKeyProvider, IdentityVerifier identityVerifier) {
+    public JwtTokenClient(SignKeyProvider signKeyProvider, IdentityVerifier identityVerifier) {
         this.signKeyProvider = signKeyProvider;
         this.identityVerifier = identityVerifier;
         signKeyProvider.registerHandler(this);
@@ -85,7 +85,6 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
                 newCheckedResult = new TokenCheckFailResult(new Exception("invalid"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             newCheckedResult = new TokenCheckFailResult(e);
         }
 
@@ -95,12 +94,13 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
 
     @Override
     public boolean handle(String oldKey, String newKey) {
+        System.out.println("sign key changed");
         ConcurrentMap<String, TokenCheckResult> tmp = checkedTokenCache.asMap();
-        lastCheckedTokenCache.cleanUp();
+        lastCheckedTokenCache.invalidateAll();
         lastCheckedTokenCache.putAll(tmp);
 
-        checkedTokenCache.cleanUp();
-        createdTokenCache.cleanUp();
+        checkedTokenCache.invalidateAll();
+        createdTokenCache.invalidateAll();
         return true;
     }
 

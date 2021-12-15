@@ -1,9 +1,10 @@
 package io.github.ctlove0523.auth.jwt.core;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Objects;
+
 
 public class JacksonUtil {
 	private static final ObjectMapper MAPPER = new ObjectMapper();

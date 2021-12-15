@@ -6,12 +6,16 @@ import io.github.ctlove0523.auth.jwt.core.SignKeyProvider;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ConsulSIgnKeyProvider implements SignKeyProvider {
-    private ConsulClient consulClient;
-    private String configKey;
+    private final ConsulClient consulClient;
+    private final String configKey;
     private List<SignKeyChangeHandler> handlers = new CopyOnWriteArrayList<>();
+    private Optional<String> val = Optional.empty();
 
     public ConsulSIgnKeyProvider(ConsulClient consulClient) {
         this(consulClient, "jwt.key");
@@ -22,16 +26,28 @@ public class ConsulSIgnKeyProvider implements SignKeyProvider {
         Objects.requireNonNull(configKey, "configKey");
         this.consulClient = consulClient;
         this.configKey = configKey;
+        this.val = Optional.ofNullable(getSignKey());
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::watch, 10L, 1L, TimeUnit.SECONDS);
     }
 
     @Override
     public String getSignKey() {
-        return null;
+        return val.orElseGet(() -> consulClient.getKVValue(configKey).getValue().getDecodedValue());
     }
 
     @Override
     public void registerHandler(SignKeyChangeHandler handler) {
         Objects.requireNonNull(handler, "handler");
         handlers.add(handler);
+    }
+
+    private void watch() {
+        String newValue = consulClient.getKVValue(configKey).getValue().getDecodedValue();
+        String oldValue = val.orElse("");
+        if (newValue != null && !newValue.equals(val.orElse(""))) {
+            val = Optional.of(newValue);
+            handlers.forEach(handler -> handler.handle(oldValue, newValue));
+        }
+
     }
 }
