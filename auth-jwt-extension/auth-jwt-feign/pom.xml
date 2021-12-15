@@ -3,23 +3,32 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>auth-jwt</artifactId>
+        <artifactId>auth-jwt-extension</artifactId>
         <groupId>io.github.ctlove0523.auth.jwt</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>auth-jwt-extension</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>auth-jwt-consul</module>
-        <module>auth-jwt-servlet-filter</module>
-        <module>auth-jwt-okhttp</module>
-        <module>auth-jwt-feign</module>
-    </modules>
+    <artifactId>auth-jwt-feign</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.ctlove0523.auth.jwt</groupId>
+            <artifactId>auth-jwt-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
