@@ -8,6 +8,10 @@ import java.util.Map;
  */
 public interface Identity extends Map<String, Object> {
 
+	static Identity newIdentity() {
+		return new DefaultIdentity();
+	}
+
 	String IDENTITY_ID = "IDENTITY_ID";
 
 	Identity setId(String id);

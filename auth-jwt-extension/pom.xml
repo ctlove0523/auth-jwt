@@ -14,6 +14,7 @@
     <modules>
         <module>auth-jwt-consul</module>
         <module>auth-jwt-servlet-filter</module>
+        <module>auth-jwt-okhttp</module>
     </modules>
 
     <properties>
