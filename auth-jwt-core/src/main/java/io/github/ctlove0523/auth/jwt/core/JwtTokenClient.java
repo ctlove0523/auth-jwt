@@ -80,7 +80,7 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
             String identityString = (String) claims.get("Identity");
             DefaultIdentity identity = JacksonUtil.json2Pojo(identityString, DefaultIdentity.class);
             if (identityVerifier.validIdentity(identity)) {
-                newCheckedResult = new TokenCheckPassResult(claims.getExpiration());
+                newCheckedResult = new TokenCheckPassResult(claims.getExpiration(),identity);
             } else {
                 newCheckedResult = new TokenCheckFailResult(new Exception("invalid"));
             }

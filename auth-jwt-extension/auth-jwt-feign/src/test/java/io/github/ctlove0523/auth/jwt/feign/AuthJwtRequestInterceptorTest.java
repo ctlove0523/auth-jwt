@@ -21,7 +21,7 @@ public class AuthJwtRequestInterceptorTest {
 
         @Override
         public TokenCheckResult validToken(String token) {
-            return new TokenCheckPassResult(new Date());
+            return new TokenCheckPassResult(new Date(),null);
         }
 
     };

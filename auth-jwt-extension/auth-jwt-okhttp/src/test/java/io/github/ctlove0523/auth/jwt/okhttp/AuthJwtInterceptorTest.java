@@ -23,7 +23,7 @@ public class AuthJwtInterceptorTest {
 
         @Override
         public TokenCheckResult validToken(String token) {
-            return new TokenCheckPassResult(new Date());
+            return new TokenCheckPassResult(new Date(), null);
         }
 
     };
@@ -52,10 +52,10 @@ public class AuthJwtInterceptorTest {
         int port = testWebServer.getPort();
         Request request = new Request.Builder()
                 .get()
-                .url("http://localhost:"+port)
+                .url("http://localhost:" + port)
                 .build();
-            Response response = client.newCall(request).execute();
-            String token = response.header("X-Auth-Jwt-Token");
+        Response response = client.newCall(request).execute();
+        String token = response.header("X-Auth-Jwt-Token");
 
         Assert.assertEquals(token, DEFAULT_TOKEN);
     }

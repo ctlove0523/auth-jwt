@@ -6,6 +6,8 @@ public interface TokenCheckResult {
 
 	boolean pass();
 
+	Identity getIdentity();
+
 	Exception cause();
 
 	default Date getExpiration() {

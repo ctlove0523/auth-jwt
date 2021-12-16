@@ -4,14 +4,21 @@ import java.util.Date;
 
 public class TokenCheckPassResult implements TokenCheckResult {
 	private Date expiration;
+	private Identity identity;
 
-	public TokenCheckPassResult(Date expiration) {
+	public TokenCheckPassResult(Date expiration,Identity identity) {
 		this.expiration = expiration;
+		this.identity = identity;
 	}
 
 	@Override
 	public boolean pass() {
 		return true;
+	}
+
+	@Override
+	public Identity getIdentity() {
+		return identity;
 	}
 
 	@Override

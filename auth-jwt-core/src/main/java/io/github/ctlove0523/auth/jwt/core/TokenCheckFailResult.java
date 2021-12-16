@@ -13,6 +13,11 @@ public class TokenCheckFailResult implements TokenCheckResult {
 	}
 
 	@Override
+	public Identity getIdentity() {
+		return null;
+	}
+
+	@Override
 	public Exception cause() {
 		return cause;
 	}
