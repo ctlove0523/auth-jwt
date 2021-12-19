@@ -37,6 +37,10 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
             .expireAfterWrite(Duration.ofMinutes(5L))
             .build();
 
+    public JwtTokenClient(SignKeyProvider signKeyProvider) {
+        this(signKeyProvider, new NoopIdentityVerifier());
+    }
+
     public JwtTokenClient(SignKeyProvider signKeyProvider, IdentityVerifier identityVerifier) {
         this.signKeyProvider = signKeyProvider;
         this.identityVerifier = identityVerifier;
