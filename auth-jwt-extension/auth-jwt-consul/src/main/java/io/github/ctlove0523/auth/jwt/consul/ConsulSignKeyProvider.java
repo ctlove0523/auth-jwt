@@ -11,17 +11,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class ConsulSIgnKeyProvider implements SignKeyProvider {
+public class ConsulSignKeyProvider implements SignKeyProvider {
     private final ConsulClient consulClient;
     private final String configKey;
     private List<SignKeyChangeHandler> handlers = new CopyOnWriteArrayList<>();
     private Optional<String> val = Optional.empty();
 
-    public ConsulSIgnKeyProvider(ConsulClient consulClient) {
+    public ConsulSignKeyProvider(ConsulClient consulClient) {
         this(consulClient, "jwt.key");
     }
 
-    public ConsulSIgnKeyProvider(ConsulClient consulClient, String configKey) {
+    public ConsulSignKeyProvider(ConsulClient consulClient, String configKey) {
         Objects.requireNonNull(consulClient, "consulClient");
         Objects.requireNonNull(configKey, "configKey");
         this.consulClient = consulClient;
