@@ -12,7 +12,7 @@ public class TokenCheckPassResult implements TokenCheckResult {
 	}
 
 	@Override
-	public boolean pass() {
+	public boolean isPass() {
 		return true;
 	}
 

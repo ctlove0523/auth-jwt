@@ -26,13 +26,10 @@ public class AuthJwtApplicationConfig {
 
     @Bean
     public TokenClient clientTokenClient(SignKeyProvider signKeyProvider) {
-
-        return new JwtTokenClient(signKeyProvider, new IdentityVerifier() {
-            @Override
-            public boolean validIdentity(Identity identity) {
-                return true;
-            }
-        });
+        return TokenClient.newBuilder()
+                .withSignKeyProvider(signKeyProvider)
+                .withIdentityVerifier(identity -> true)
+                .build();
     }
 
     @Bean

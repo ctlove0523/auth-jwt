@@ -30,7 +30,7 @@ public class AuthJwtFilter implements Filter {
             }
 
             TokenCheckResult result = tokenClient.validToken(token);
-            if (!result.pass()) {
+            if (!result.isPass()) {
                 response.setStatus(401);
                 writeErrorMessage(response,"X-Auth-Jwt-Token invalid");
                 return;

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public interface TokenCheckResult {
 
-	boolean pass();
+	boolean isPass();
 
 	Identity getIdentity();
 

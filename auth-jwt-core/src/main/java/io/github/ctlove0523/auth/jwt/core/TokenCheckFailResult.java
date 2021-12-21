@@ -8,7 +8,7 @@ public class TokenCheckFailResult implements TokenCheckResult {
 	}
 
 	@Override
-	public boolean pass() {
+	public boolean isPass() {
 		return false;
 	}
 

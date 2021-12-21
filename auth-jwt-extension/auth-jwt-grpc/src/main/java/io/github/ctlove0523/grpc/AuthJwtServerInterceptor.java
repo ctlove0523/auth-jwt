@@ -23,7 +23,7 @@ public class AuthJwtServerInterceptor implements ServerInterceptor {
         } else {
             String token = value.substring(AuthJwtGrpcConstants.BEARER_TYPE.length()).trim();
             TokenCheckResult checkResult = tokenClient.validToken(token);
-            if (!checkResult.pass()) {
+            if (!checkResult.isPass()) {
                 status = Status.UNAUTHENTICATED.withDescription("Token Invalid").withCause(checkResult.cause());
             }
             if (checkResult.getIdentity() != null) {
