@@ -7,9 +7,17 @@ auth-jwt提供基于JWT Token的认证能力，为了方便集成使用提供了
 
 ## 1.1 创建、校验Token
 
-`TokenClient` 依赖`SignKeyProvider` 提供签名token的key，`IdentityVerifier`对token中的身份进行校验。
+`TokenClient` 依赖`SignKeyProvider` 提供签名token的key，`IdentityVerifier`对token中的身份进行校验。要想使用该功能需要引入相关依赖：
 
+~~~xml
+<dependency>
+	<groupId>io.github.ctlove0523.auth.jwt</groupId>
+	<artifactId>auth-jwt-core</artifactId>
+    <version>${version}</version>
+</dependency>
+~~~
 
+> version根据实际情况填写
 
 ### 1.1.1 创建`SignKeyProvider`：
 
@@ -41,7 +49,7 @@ IdentityVerifier identityVerifier = identity -> true;
 
 
 
-### 1.1.2 创建`TokenClient`：
+### 1.1.3 创建`TokenClient`：
 
 ~~~java
 TokenClient tokenClient = TokenClient.newBuilder()
@@ -49,4 +57,61 @@ TokenClient tokenClient = TokenClient.newBuilder()
 	.withIdentityVerifier(identityVerifier)
 	.build();
 ~~~
+
+
+
+### 1.1.4 生成校验token
+
+~~~java
+// 创建一个携带identity的token
+Identity identity = Identity.newIdentity().setId("your id");
+String token = tokenClient.getToken(identity);
+
+//校验token，可以从checkResult判断是否合法，已经不合法的原因
+TokenCheckResult checkResult = tokenClient.validToken(token);
+~~~
+
+## 1.2 使用auth-jwt-servlet-filter对web请求认证
+
+### 1.2.1 引入相关依赖：
+
+~~~xml
+<dependency>
+	<groupId>io.github.ctlove0523.auth.jwt</groupId>
+	<artifactId>auth-jwt-servlet-filter</artifactId>
+    <version>${version}</version>
+</dependency>
+~~~
+
+> version根据实际情况填写
+
+### 1.2.2 注册Filter
+
+~~~java
+@Bean
+public FilterRegistrationBean<Filter> registerSecondBean(TokenClient tokenClient) {
+	FilterRegistrationBean<Filter> filter = new FilterRegistrationBean<>();
+	filter.setFilter(new AuthJwtFilter(tokenClient));
+	filter.setName("third filter");
+	filter.setOrder(1);
+	filter.setUrlPatterns(Arrays.asList("/application"));
+	return filter;
+}
+~~~
+
+
+
+# 2 架构
+
+<img src="img/auth-jwt.png" alt="整体架构" style="zoom:70%;" />
+
+auth-jwt的整体架构非常的简单，auth-jwt整体划分为三层：SignKeyProvider+IdentityVerifier，Token Client和适配器。
+
+SignKeyProvider：获取签名token的key，key变化时通知监听器。
+
+IdentityVerfier：对token中携带的身份信息进行校验
+
+Token Client：核心组件，创建、校验token
+
+适配器：适配各种client、server，提供开箱即用的插件。
 
