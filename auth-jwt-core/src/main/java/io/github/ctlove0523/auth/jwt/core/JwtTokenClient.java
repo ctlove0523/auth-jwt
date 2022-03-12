@@ -1,12 +1,5 @@
 package io.github.ctlove0523.auth.jwt.core;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
-
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
@@ -17,10 +10,20 @@ import io.jsonwebtoken.impl.DefaultClaims;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+
 public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     private static final long TOKEN_VALID_TIME = 24 * 60 * 60 * 1000L;
     private final SignKeyProvider signKeyProvider;
     private final IdentityVerifier identityVerifier;
+    private final WorkMod workMod;
 
     private final Cache<String, String> createdTokenCache = Caffeine
             .newBuilder()
@@ -40,6 +43,7 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     public JwtTokenClient(Builder builder) {
         this.signKeyProvider = builder.getSignKeyProvider();
         this.identityVerifier = builder.getIdentityVerifier();
+        this.workMod = builder.getWorkMod();
     }
 
     @Override
@@ -70,25 +74,49 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
             return lastCheckResult;
         }
 
-        TokenCheckResult newCheckedResult;
+        TokenCheckResult newCheckedResult = verifyToken(token, workMod);
+
+        checkedTokenCache.put(token, newCheckedResult);
+        return newCheckedResult;
+    }
+
+    private TokenCheckResult verifyToken(String token, WorkMod workMod) {
+        switch (workMod) {
+            case SharedKey:
+                return verifyTokenWithKey(token, signKeyProvider.getSignKey());
+            case ExclusiveKey:
+                String[] tokenParts = token.split("\\.");
+                String body = new String(Base64.getDecoder().decode(tokenParts[1]));
+                System.out.println(body);
+
+                String claims = body;
+                Map<String, String> claimsMap = JacksonUtil.json2Pojo(claims, Map.class);
+                String signKey = signKeyProvider.getSignKey(claimsMap.get("iss"));
+                return verifyTokenWithKey(token, signKey);
+            default:
+                return new TokenCheckFailResult(new Exception("work mode invalid"));
+        }
+    }
+
+    private TokenCheckResult verifyTokenWithKey(String token, String signKey) {
+        TokenCheckResult tokenCheckedResult;
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(signKeyProvider.getSignKey().getBytes(StandardCharsets.UTF_8))
+                    .setSigningKey(signKey.getBytes(StandardCharsets.UTF_8))
                     .parseClaimsJws(token)
                     .getBody();
             String identityString = (String) claims.get("Identity");
             DefaultIdentity identity = JacksonUtil.json2Pojo(identityString, DefaultIdentity.class);
             if (identityVerifier.validIdentity(identity)) {
-                newCheckedResult = new TokenCheckPassResult(claims.getExpiration(),identity);
+                tokenCheckedResult = new TokenCheckPassResult(claims.getExpiration(), identity);
             } else {
-                newCheckedResult = new TokenCheckFailResult(new Exception("invalid"));
+                tokenCheckedResult = new TokenCheckFailResult(new Exception("invalid"));
             }
         } catch (Exception e) {
-            newCheckedResult = new TokenCheckFailResult(e);
+            tokenCheckedResult = new TokenCheckFailResult(e);
         }
 
-        checkedTokenCache.put(token, newCheckedResult);
-        return newCheckedResult;
+        return tokenCheckedResult;
     }
 
     @Override
@@ -110,12 +138,22 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
         Claims claims = new DefaultClaims();
         claims.setIssuedAt(issuedAt);
         claims.setExpiration(expiration);
-        claims.setIssuer("auth-jwt");
+        claims.setIssuer(identity.getId());
         claims.put("Identity", JacksonUtil.pojo2Json(identity));
+        String signKey = "";
+        switch (workMod) {
+            case SharedKey:
+                signKey = signKeyProvider.getSignKey();
+                break;
+            case ExclusiveKey:
+                signKey = signKeyProvider.getSignKey(identity.getId());
+                break;
+            default:
+        }
         return Jwts.builder()
                 .setExpiration(expiration)
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, signKeyProvider.getSignKey().getBytes(StandardCharsets.UTF_8))
+                .signWith(SignatureAlgorithm.HS256, signKey.getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
 

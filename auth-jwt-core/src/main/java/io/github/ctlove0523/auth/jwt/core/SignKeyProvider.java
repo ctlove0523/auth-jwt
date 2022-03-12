@@ -4,5 +4,9 @@ public interface SignKeyProvider {
 
 	String getSignKey();
 
+	default String getSignKey(String  identity) {
+		return "";
+	}
+
 	void registerHandler(SignKeyChangeHandler handler);
 }

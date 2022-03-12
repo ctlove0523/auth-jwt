@@ -13,6 +13,7 @@ public interface TokenClient {
 	final class Builder {
 		private SignKeyProvider signKeyProvider;
 		private IdentityVerifier identityVerifier;
+		private WorkMod workMod;
 
 		public Builder withSignKeyProvider(SignKeyProvider signKeyProvider) {
 			this.signKeyProvider = signKeyProvider;
@@ -21,6 +22,11 @@ public interface TokenClient {
 
 		public Builder withIdentityVerifier(IdentityVerifier identityVerifier) {
 			this.identityVerifier = identityVerifier;
+			return this;
+		}
+
+		public Builder withWorkMod(WorkMod workMod) {
+			this.workMod = workMod;
 			return this;
 		}
 
@@ -34,6 +40,10 @@ public interface TokenClient {
 
 		public IdentityVerifier getIdentityVerifier() {
 			return identityVerifier;
+		}
+
+		public WorkMod getWorkMod() {
+			return workMod;
 		}
 	}
 }

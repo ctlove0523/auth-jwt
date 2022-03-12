@@ -26,6 +26,7 @@ public class TokenClientTest {
         TokenClient tokenClient = TokenClient.newBuilder()
                 .withSignKeyProvider(signKeyProvider)
                 .withIdentityVerifier(identityVerifier)
+                .withWorkMod(WorkMod.SharedKey)
                 .build();
 
         Identity identity = Identity.newIdentity().setId(UUID.randomUUID().toString());
@@ -42,6 +43,7 @@ public class TokenClientTest {
         TokenClient tokenClient = TokenClient.newBuilder()
                 .withSignKeyProvider(signKeyProvider)
                 .withIdentityVerifier(identityVerifier)
+                .withWorkMod(WorkMod.SharedKey)
                 .build();
 
         Identity identity = Identity.newIdentity().setId(UUID.randomUUID().toString());
@@ -60,6 +62,7 @@ public class TokenClientTest {
         TokenClient tokenClient = TokenClient.newBuilder()
                 .withSignKeyProvider(signKeyProvider)
                 .withIdentityVerifier(identityVerifier)
+                .withWorkMod(WorkMod.SharedKey)
                 .build();
 
         String id = UUID.randomUUID().toString();

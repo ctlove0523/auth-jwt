@@ -7,7 +7,7 @@
     <groupId>io.github.ctlove0523.auth.jwt</groupId>
     <artifactId>auth-jwt</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <modules>
         <module>auth-jwt-extension</module>
         <module>auth-jwt-core</module>

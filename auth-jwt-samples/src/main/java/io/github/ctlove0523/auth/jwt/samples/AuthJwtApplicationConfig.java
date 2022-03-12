@@ -29,6 +29,7 @@ public class AuthJwtApplicationConfig {
         return TokenClient.newBuilder()
                 .withSignKeyProvider(signKeyProvider)
                 .withIdentityVerifier(identity -> true)
+                .withWorkMod(WorkMod.ExclusiveKey)
                 .build();
     }
 
