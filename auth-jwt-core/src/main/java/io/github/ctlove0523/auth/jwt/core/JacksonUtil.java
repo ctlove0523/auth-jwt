@@ -1,8 +1,12 @@
 package io.github.ctlove0523.auth.jwt.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.bind.v2.model.core.TypeRef;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -32,5 +36,17 @@ public class JacksonUtil {
 		}
 
 		return null;
+	}
+
+	public static Map<String, String> json2Map(String jsonString) {
+		Objects.requireNonNull(jsonString, "jsonString");
+
+		try {
+			return MAPPER.readValue(jsonString, new TypeReference<Map<String, String>>() {});
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return new HashMap<>();
 	}
 }

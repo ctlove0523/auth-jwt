@@ -14,7 +14,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -111,13 +110,18 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     }
 
     @Override
-    public boolean handle(String oldKey, String newKey) {
-        ConcurrentMap<String, TokenCheckResult> tmp = checkedTokenCache.asMap();
-        lastCheckedTokenCache.invalidateAll();
-        lastCheckedTokenCache.putAll(tmp);
+    public boolean handle(SignKeyChangeEvent event) {
+        String id = event.getOwner();
+        createdTokenCache.invalidate(id);
 
-        checkedTokenCache.invalidateAll();
-        createdTokenCache.invalidateAll();
+        TokenCheckResult result = checkedTokenCache.getIfPresent(id);
+        if (Objects.nonNull(result)) {
+            lastCheckedTokenCache.put(id, result);
+        }
+
+        checkedTokenCache.invalidate(id);
+        checkedTokenCache.invalidate(id);
+
         return true;
     }
 
