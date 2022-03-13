@@ -1,5 +1,6 @@
 package io.github.ctlove0523.auth.jwt.okhttp;
 
+import io.github.ctlove0523.auth.jwt.core.Constants;
 import io.github.ctlove0523.auth.jwt.core.Identity;
 import io.github.ctlove0523.auth.jwt.core.TokenClient;
 import okhttp3.Interceptor;
@@ -27,7 +28,7 @@ public class AuthJwtInterceptor implements Interceptor {
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request request = chain.request();
 
-        request = request.newBuilder().addHeader("X-Auth-Jwt-Token", tokenClient.getToken(identity))
+        request = request.newBuilder().addHeader(Constants.TOKEN_KEY, tokenClient.getToken(identity))
                 .build();
 
         return chain.proceed(request);

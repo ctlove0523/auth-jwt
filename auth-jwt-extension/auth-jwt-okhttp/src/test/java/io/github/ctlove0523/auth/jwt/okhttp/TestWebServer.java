@@ -1,5 +1,6 @@
 package io.github.ctlove0523.auth.jwt.okhttp;
 
+import io.github.ctlove0523.auth.jwt.core.Constants;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -17,9 +18,9 @@ public class TestWebServer {
             @NotNull
             @Override
             public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) throws InterruptedException {
-                String token = recordedRequest.getHeader("X-Auth-Jwt-Token");
+                String token = recordedRequest.getHeader(Constants.TOKEN_KEY);
                 MockResponse response = new MockResponse();
-                response.setHeader("X-Auth-Jwt-Token", token);
+                response.setHeader(Constants.TOKEN_KEY, token);
                 return response;
             }
         });

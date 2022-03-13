@@ -1,7 +1,7 @@
 package io.github.ctlove0523.auth.jwt.samples;
 
 import com.ecwid.consul.v1.ConsulClient;
-import io.github.ctlove0523.auth.jwt.consul.ConsulSignKeyProvider;
+import io.github.ctlove0523.auth.jwt.consul.ConsulPubPrivateSignKeyProvider;
 import io.github.ctlove0523.auth.jwt.core.*;
 import io.github.ctlove0523.auth.jwt.servlet.filter.AuthJwtFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,7 +21,7 @@ public class AuthJwtApplicationConfig {
 
     @Bean
     public SignKeyProvider createSignKeyProvider(ConsulClient client) {
-        return new ConsulSignKeyProvider(client);
+        return new ConsulPubPrivateSignKeyProvider(client);
     }
 
     @Bean

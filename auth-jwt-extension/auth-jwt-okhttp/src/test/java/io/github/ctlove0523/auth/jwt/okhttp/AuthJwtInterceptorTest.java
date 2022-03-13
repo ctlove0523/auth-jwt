@@ -55,7 +55,7 @@ public class AuthJwtInterceptorTest {
                 .url("http://localhost:" + port)
                 .build();
         Response response = client.newCall(request).execute();
-        String token = response.header("X-Auth-Jwt-Token");
+        String token = response.header(Constants.TOKEN_KEY);
 
         Assert.assertEquals(token, DEFAULT_TOKEN);
     }

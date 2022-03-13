@@ -1,16 +1,29 @@
 package io.github.ctlove0523.auth.jwt.core;
 
+import io.jsonwebtoken.security.Keys;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.UUID;
 
 public class TokenClientTest {
     private static final String DEFAULT_SIGN_KEY = UUID.randomUUID().toString();
-    private SignKeyProvider signKeyProvider = new SignKeyProvider() {
+    private final SignKeyProvider signKeyProvider = new SignKeyProvider() {
         @Override
-        public String getSignKey() {
-            return DEFAULT_SIGN_KEY;
+        public Key getSignKey(String identity) {
+            return Keys.hmacShaKeyFor(DEFAULT_SIGN_KEY.getBytes(StandardCharsets.UTF_8));
+        }
+
+        @Override
+        public Key getVerifyKey(String identity) {
+            return Keys.hmacShaKeyFor(DEFAULT_SIGN_KEY.getBytes(StandardCharsets.UTF_8));
+        }
+
+        @Override
+        public SignKeyType getType() {
+            return SignKeyType.SecretKeyType;
         }
 
         @Override

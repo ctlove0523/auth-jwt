@@ -5,12 +5,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClaims;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
@@ -18,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+
 
 public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     private static final long TOKEN_VALID_TIME = 24 * 60 * 60 * 1000L;
@@ -81,28 +80,20 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     }
 
     private TokenCheckResult verifyToken(String token, WorkMod workMod) {
-        switch (workMod) {
-            case SharedKey:
-                return verifyTokenWithKey(token, signKeyProvider.getSignKey());
-            case ExclusiveKey:
-                String[] tokenParts = token.split("\\.");
-                String body = new String(Base64.getDecoder().decode(tokenParts[1]));
-                System.out.println(body);
+        String[] tokenParts = token.split("\\.");
+        String body = new String(Base64.getDecoder().decode(tokenParts[1]));
+        Map<String, String> claims = JacksonUtil.json2Pojo(body, Map.class);
+        String identityString = claims.get("Identity");
 
-                String claims = body;
-                Map<String, String> claimsMap = JacksonUtil.json2Pojo(claims, Map.class);
-                String signKey = signKeyProvider.getSignKey(claimsMap.get("iss"));
-                return verifyTokenWithKey(token, signKey);
-            default:
-                return new TokenCheckFailResult(new Exception("work mode invalid"));
-        }
+        DefaultIdentity identity = JacksonUtil.json2Pojo(identityString, DefaultIdentity.class);
+        return verifyTokenWithKey(token, signKeyProvider.getVerifyKey(identity.getId()));
     }
 
-    private TokenCheckResult verifyTokenWithKey(String token, String signKey) {
+    private TokenCheckResult verifyTokenWithKey(String token, Key signKey) {
         TokenCheckResult tokenCheckedResult;
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(signKey.getBytes(StandardCharsets.UTF_8))
+                    .setSigningKey(signKey)
                     .parseClaimsJws(token)
                     .getBody();
             String identityString = (String) claims.get("Identity");
@@ -121,7 +112,6 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
 
     @Override
     public boolean handle(String oldKey, String newKey) {
-        System.out.println("sign key changed");
         ConcurrentMap<String, TokenCheckResult> tmp = checkedTokenCache.asMap();
         lastCheckedTokenCache.invalidateAll();
         lastCheckedTokenCache.putAll(tmp);
@@ -135,26 +125,27 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + TOKEN_VALID_TIME);
 
-        Claims claims = new DefaultClaims();
+        Claims claims = Jwts.claims();
         claims.setIssuedAt(issuedAt);
         claims.setExpiration(expiration);
         claims.setIssuer(identity.getId());
         claims.put("Identity", JacksonUtil.pojo2Json(identity));
-        String signKey = "";
-        switch (workMod) {
-            case SharedKey:
-                signKey = signKeyProvider.getSignKey();
-                break;
-            case ExclusiveKey:
-                signKey = signKeyProvider.getSignKey(identity.getId());
-                break;
-            default:
-        }
+
+        Key secretKey = getSignKey(identity);
         return Jwts.builder()
                 .setExpiration(expiration)
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, signKey.getBytes(StandardCharsets.UTF_8))
+                .signWith(secretKey)
                 .compact();
+    }
+
+    /**
+     * 获取签名token的Key
+     *
+     * @return {@see Key}
+     */
+    private Key getSignKey(Identity identity) {
+        return signKeyProvider.getSignKey(identity.getId());
     }
 
     private static final class TokenCheckResultExpiry implements Expiry<String, TokenCheckResult> {

@@ -3,7 +3,9 @@ package io.github.ctlove0523.auth.jwt.apollo;
 import com.ctrip.framework.apollo.ConfigService;
 import io.github.ctlove0523.auth.jwt.core.SignKeyChangeHandler;
 import io.github.ctlove0523.auth.jwt.core.SignKeyProvider;
+import io.github.ctlove0523.auth.jwt.core.SignKeyType;
 
+import java.security.Key;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +28,21 @@ public class ApolloSignKeyProvider implements SignKeyProvider {
     }
 
     @Override
-    public String getSignKey() {
-        return ConfigService.getConfig(namespace).getProperty(configKey, "");
+    public Key getSignKey(String identity) {
+        // TODO: 2022/3/13
+        return null;
+    }
+
+    @Override
+    public Key getVerifyKey(String identity) {
+        // TODO: 2022/3/13
+        return null;
+    }
+
+    @Override
+    public SignKeyType getType() {
+        // TODO: 2022/3/13
+        return null;
     }
 
     @Override

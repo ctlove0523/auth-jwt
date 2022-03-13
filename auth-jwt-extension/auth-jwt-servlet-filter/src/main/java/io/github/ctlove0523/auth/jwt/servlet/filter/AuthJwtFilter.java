@@ -1,5 +1,6 @@
 package io.github.ctlove0523.auth.jwt.servlet.filter;
 
+import io.github.ctlove0523.auth.jwt.core.Constants;
 import io.github.ctlove0523.auth.jwt.core.TokenCheckResult;
 import io.github.ctlove0523.auth.jwt.core.TokenClient;
 
@@ -22,7 +23,7 @@ public class AuthJwtFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-            String token = request.getHeader("X-Auth-Jwt-Token");
+            String token = request.getHeader(Constants.TOKEN_KEY);
             if (token == null || token.isEmpty()) {
                 response.setStatus(400);
                 writeErrorMessage(response,"X-Auth-Jwt-Token not exist");

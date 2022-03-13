@@ -1,12 +1,15 @@
 package io.github.ctlove0523.auth.jwt.core;
 
+import java.security.Key;
+
 public interface SignKeyProvider {
 
-	String getSignKey();
 
-	default String getSignKey(String  identity) {
-		return "";
-	}
+	Key getSignKey(String identity);
+
+	Key getVerifyKey(String identity);
+
+	SignKeyType getType();
 
 	void registerHandler(SignKeyChangeHandler handler);
 }
