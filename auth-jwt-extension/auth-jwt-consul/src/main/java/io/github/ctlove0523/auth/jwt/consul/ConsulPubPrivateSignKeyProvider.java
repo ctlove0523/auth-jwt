@@ -5,7 +5,6 @@ import io.github.ctlove0523.auth.jwt.core.JacksonUtil;
 import io.github.ctlove0523.auth.jwt.core.SignKeyChangeEvent;
 import io.github.ctlove0523.auth.jwt.core.SignKeyChangeHandler;
 import io.github.ctlove0523.auth.jwt.core.SignKeyProvider;
-import io.github.ctlove0523.auth.jwt.core.SignKeyType;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -100,11 +99,6 @@ public class ConsulPubPrivateSignKeyProvider implements SignKeyProvider {
         }
 
         return null;
-    }
-
-    @Override
-    public SignKeyType getType() {
-        return SignKeyType.RsaKeyType;
     }
 
     @Override

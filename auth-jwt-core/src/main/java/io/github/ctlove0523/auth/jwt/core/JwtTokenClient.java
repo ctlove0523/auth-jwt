@@ -16,12 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-
 public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     private static final long TOKEN_VALID_TIME = 24 * 60 * 60 * 1000L;
     private final SignKeyProvider signKeyProvider;
     private final IdentityVerifier identityVerifier;
-    private final WorkMod workMod;
 
     private final Cache<String, String> createdTokenCache = Caffeine
             .newBuilder()
@@ -41,7 +39,6 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     public JwtTokenClient(Builder builder) {
         this.signKeyProvider = builder.getSignKeyProvider();
         this.identityVerifier = builder.getIdentityVerifier();
-        this.workMod = builder.getWorkMod();
     }
 
     @Override
@@ -72,16 +69,16 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
             return lastCheckResult;
         }
 
-        TokenCheckResult newCheckedResult = verifyToken(token, workMod);
+        TokenCheckResult newCheckedResult = verifyToken(token);
 
         checkedTokenCache.put(token, newCheckedResult);
         return newCheckedResult;
     }
 
-    private TokenCheckResult verifyToken(String token, WorkMod workMod) {
+    private TokenCheckResult verifyToken(String token) {
         String[] tokenParts = token.split("\\.");
         String body = new String(Base64.getDecoder().decode(tokenParts[1]));
-        Map<String, String> claims = JacksonUtil.json2Pojo(body, Map.class);
+        Map<String, String> claims = JacksonUtil.json2Map(body);
         String identityString = claims.get("Identity");
 
         DefaultIdentity identity = JacksonUtil.json2Pojo(identityString, DefaultIdentity.class);

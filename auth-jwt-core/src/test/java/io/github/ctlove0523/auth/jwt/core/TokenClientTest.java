@@ -22,11 +22,6 @@ public class TokenClientTest {
         }
 
         @Override
-        public SignKeyType getType() {
-            return SignKeyType.SecretKeyType;
-        }
-
-        @Override
         public void registerHandler(SignKeyChangeHandler handler) {
             // no op
         }

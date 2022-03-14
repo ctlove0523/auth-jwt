@@ -4,23 +4,25 @@ import java.util.Map;
 
 /**
  * 用户或者组件的身份
+ *
  * @author chentong
  */
 public interface Identity extends Map<String, Object> {
 
-	static Identity newIdentity() {
-		return new DefaultIdentity();
-	}
+    static Identity newIdentity() {
+        return new DefaultIdentity();
+    }
 
-	String IDENTITY_ID = "IDENTITY_ID";
+    String IDENTITY_ID = "IDENTITY_ID";
 
-	Identity setId(String id);
+    Identity setId(String id);
 
-	Identity setValue(String key, Object val);
+    Identity setValue(String key, Object val);
 
-	/**
-	 * 身份的唯一标识，不同身份的id不同
-	 * @return 身份ID
-	 */
-	String getId();
+    /**
+     * 身份的唯一标识，不同身份的id不同
+     *
+     * @return 身份ID
+     */
+    String getId();
 }

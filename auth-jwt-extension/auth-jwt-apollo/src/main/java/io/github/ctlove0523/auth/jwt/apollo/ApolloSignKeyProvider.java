@@ -2,7 +2,6 @@ package io.github.ctlove0523.auth.jwt.apollo;
 
 import io.github.ctlove0523.auth.jwt.core.SignKeyChangeHandler;
 import io.github.ctlove0523.auth.jwt.core.SignKeyProvider;
-import io.github.ctlove0523.auth.jwt.core.SignKeyType;
 
 import java.security.Key;
 import java.util.List;
@@ -27,12 +26,6 @@ public class ApolloSignKeyProvider implements SignKeyProvider {
 
     @Override
     public Key getVerifyKey(String identity) {
-        // TODO: 2022/3/13
-        return null;
-    }
-
-    @Override
-    public SignKeyType getType() {
         // TODO: 2022/3/13
         return null;
     }
