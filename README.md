@@ -11,8 +11,8 @@ auth-jwt提供基于JWT Token的认证能力，为了方便集成使用提供了
 
 ~~~xml
 <dependency>
-	<groupId>io.github.ctlove0523.auth.jwt</groupId>
-	<artifactId>auth-jwt-core</artifactId>
+    <groupId>io.github.ctlove0523.auth.jwt</groupId>
+    <artifactId>auth-jwt-core</artifactId>
     <version>${version}</version>
 </dependency>
 ~~~
@@ -77,8 +77,8 @@ TokenCheckResult checkResult = tokenClient.validToken(token);
 
 ~~~xml
 <dependency>
-	<groupId>io.github.ctlove0523.auth.jwt</groupId>
-	<artifactId>auth-jwt-servlet-filter</artifactId>
+    <groupId>io.github.ctlove0523.auth.jwt</groupId>
+    <artifactId>auth-jwt-servlet-filter</artifactId>
     <version>${version}</version>
 </dependency>
 ~~~
