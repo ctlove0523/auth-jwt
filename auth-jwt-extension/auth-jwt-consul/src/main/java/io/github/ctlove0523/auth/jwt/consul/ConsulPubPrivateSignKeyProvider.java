@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Consul实现使用公私钥生成喝校验token，使用私钥签名，公钥校验
+ * https://www.javamex.com/tutorials/cryptography/rsa_encryption.shtml
  */
 public class ConsulPubPrivateSignKeyProvider implements SignKeyProvider {
     private final ConsulClient consulClient;

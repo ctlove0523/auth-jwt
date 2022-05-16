@@ -19,7 +19,7 @@ public class AuthJwtController {
     @RequestMapping(value = "/token",method = RequestMethod.GET)
     public ResponseEntity<String> getToken() {
         Identity identity = new DefaultIdentity();
-        identity.setId("service-a");
+        identity.setId("client");
         String token = tokenClient.getToken(identity);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }

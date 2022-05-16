@@ -20,6 +20,7 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     private static final long TOKEN_VALID_TIME = 24 * 60 * 60 * 1000L;
     private final SignKeyProvider signKeyProvider;
     private final IdentityVerifier identityVerifier;
+    private final TokenCipher tokenCipher;
 
     private final Cache<String, String> createdTokenCache = Caffeine
             .newBuilder()
@@ -39,6 +40,12 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
     public JwtTokenClient(Builder builder) {
         this.signKeyProvider = builder.getSignKeyProvider();
         this.identityVerifier = builder.getIdentityVerifier();
+
+        if (builder.getTokenCipher() != null) {
+            this.tokenCipher = builder.getTokenCipher();
+        } else {
+            this.tokenCipher = new NoopTokenCipher();
+        }
     }
 
     @Override
@@ -48,30 +55,31 @@ public class JwtTokenClient implements TokenClient, SignKeyChangeHandler {
 
         String token = createdTokenCache.getIfPresent(id);
         if (Objects.nonNull(token)) {
-            return token;
+            return tokenCipher.decrypt(token);
         }
 
         token = createToken(identity);
-        createdTokenCache.put(id, token);
+        createdTokenCache.put(id, tokenCipher.encrypt(token));
 
         return token;
     }
 
     @Override
     public TokenCheckResult validToken(String token) {
-        TokenCheckResult checkResult = checkedTokenCache.getIfPresent(token);
+        String tokenHash = tokenCipher.hashCode(token);
+        TokenCheckResult checkResult = checkedTokenCache.getIfPresent(tokenHash);
         if (Objects.nonNull(checkResult)) {
             return checkResult;
         }
 
-        TokenCheckResult lastCheckResult = lastCheckedTokenCache.getIfPresent(token);
+        TokenCheckResult lastCheckResult = lastCheckedTokenCache.getIfPresent(tokenHash);
         if (Objects.nonNull(lastCheckResult)) {
             return lastCheckResult;
         }
 
         TokenCheckResult newCheckedResult = verifyToken(token);
 
-        checkedTokenCache.put(token, newCheckedResult);
+        checkedTokenCache.put(tokenHash, newCheckedResult);
         return newCheckedResult;
     }
 
