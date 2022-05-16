@@ -9,8 +9,8 @@ auth-jwt使用JWT对请求认证，提供开箱即用的插件以提升集成速
 
 ~~~xml
 <dependency>
-	<groupId>io.github.ctlove0523.auth.jwt</groupId>
-	<artifactId>auth-jwt-core</artifactId>
+    <groupId>io.github.ctlove0523.auth.jwt</groupId>
+    <artifactId>auth-jwt-core</artifactId>
     <version>${version}</version>
 </dependency>
 ~~~
@@ -75,8 +75,8 @@ TokenCheckResult checkResult = tokenClient.validToken(token);
 
 ~~~xml
 <dependency>
-	<groupId>io.github.ctlove0523.auth.jwt</groupId>
-	<artifactId>auth-jwt-servlet-filter</artifactId>
+    <groupId>io.github.ctlove0523.auth.jwt</groupId>
+    <artifactId>auth-jwt-servlet-filter</artifactId>
     <version>${version}</version>
 </dependency>
 ~~~
