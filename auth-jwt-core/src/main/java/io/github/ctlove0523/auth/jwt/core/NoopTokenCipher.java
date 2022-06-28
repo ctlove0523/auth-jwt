@@ -1,6 +1,6 @@
 package io.github.ctlove0523.auth.jwt.core;
 
-class NoopTokenCipher implements TokenCipher {
+public class NoopTokenCipher implements TokenCipher {
     @Override
     public String encrypt(String plainToken) {
         return plainToken;
